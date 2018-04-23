@@ -3,7 +3,8 @@ import sys
 # import ipdb
 import pandas as pd
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
+import pyqtgraph as pg
 
 
 class PlotApplication(QtWidgets.QMainWindow):
@@ -20,6 +21,7 @@ class PlotApplication(QtWidgets.QMainWindow):
     def init_ui(self):
         """Create the user interface."""
 
+        # Menubar
         menubar = self.menuBar()
 
         open_file_action = QtWidgets.QAction('&Open file', self)
@@ -28,6 +30,13 @@ class PlotApplication(QtWidgets.QMainWindow):
         file_menu = menubar.addMenu('&File')
         file_menu.addAction(open_file_action)
 
+        # Main UI
+        plot = pg.PlotWidget()
+
+        layout = QtGui.QGridLayout()
+        layout.addWidget(plot)
+
+        self.setLayout(layout)
         self.show()
 
     def open_file_dialog(self):
