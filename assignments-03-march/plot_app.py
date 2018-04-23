@@ -18,6 +18,10 @@ class PlotApplication(QtWidgets.QMainWindow):
 
         self.init_ui()
 
+        # temporary code to speed up development
+        self.data = pd.read_csv('data.csv')
+        self.plot_data()
+
     def init_ui(self):
         """Create the user interface."""
 
@@ -31,6 +35,8 @@ class PlotApplication(QtWidgets.QMainWindow):
         file_menu.addAction(open_file_action)
 
         # Main UI
+        pg.setConfigOption('background', 'w')
+        pg.setConfigOption('foreground', 'k')
         self.plot = pg.PlotWidget()
 
         self.setCentralWidget(self.plot)
@@ -47,7 +53,13 @@ class PlotApplication(QtWidgets.QMainWindow):
     def plot_data(self):
         """Plot the data in a graph."""
 
-        self.plot.plot(self.data.x, self.data.y)
+        pen = pg.mkPen(width=3, color='k')
+        brush = pg.mkBrush(color='k')
+        self.plot.plot(self.data.x, self.data.y, pen=None, symbol='o',
+                       symbolSize=7, symbolPen=None, symbolBrush=brush)
+        errorbars = pg.ErrorBarItem(x=self.data.x, y=self.data.y,
+                                    height=self.data.yerr, pen=pen)
+        self.plot.addItem(errorbars)
 
 
 if __name__ == '__main__':
