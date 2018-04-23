@@ -3,7 +3,7 @@ import sys
 # import ipdb
 import pandas as pd
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 import pyqtgraph as pg
 
 
@@ -33,10 +33,7 @@ class PlotApplication(QtWidgets.QMainWindow):
         # Main UI
         plot = pg.PlotWidget()
 
-        layout = QtGui.QGridLayout()
-        layout.addWidget(plot)
-
-        self.setLayout(layout)
+        self.setCentralWidget(plot)
         self.show()
 
     def open_file_dialog(self):
