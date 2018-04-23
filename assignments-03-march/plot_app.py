@@ -2,7 +2,7 @@ import sys
 
 import ipdb
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 
 
 class PlotApplication(QtWidgets.QMainWindow):
