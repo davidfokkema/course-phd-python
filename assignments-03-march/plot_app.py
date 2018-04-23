@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets
 import pyqtgraph as pg
 
 
-class PlotApplication(QtWidgets.QMainWindow):
+class PlotApplication(QtWidgets.QWidget):
 
     """The main application."""
 
@@ -26,7 +26,7 @@ class PlotApplication(QtWidgets.QMainWindow):
         """Create the user interface."""
 
         # Menubar
-        menubar = self.menuBar()
+        menubar = QtWidgets.QMenuBar()
 
         open_file_action = QtWidgets.QAction('&Open file', self)
         open_file_action.triggered.connect(self.open_file_dialog)
@@ -39,7 +39,11 @@ class PlotApplication(QtWidgets.QMainWindow):
         pg.setConfigOption('foreground', 'k')
         self.plot = pg.PlotWidget()
 
-        self.setCentralWidget(self.plot)
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(self.plot, 0, 0)
+        layout.setMenuBar(menubar)
+
+        self.setLayout(layout)
         self.show()
 
     def open_file_dialog(self):
