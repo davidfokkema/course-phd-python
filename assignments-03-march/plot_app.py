@@ -1,7 +1,9 @@
 import sys
 
 # import ipdb
+import numpy as np
 import pandas as pd
+from lmfit import models
 
 from PyQt5 import QtWidgets
 import pyqtgraph as pg
@@ -34,14 +36,21 @@ class PlotApplication(QtWidgets.QWidget):
         file_menu = menubar.addMenu('&File')
         file_menu.addAction(open_file_action)
 
-        # Main UI
+        # Main UI components
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         self.plot = pg.PlotWidget()
 
+        self.text = QtWidgets.QPlainTextEdit(readOnly=True)
+        self.button = QtWidgets.QPushButton('Fit linear model')
+        self.button.clicked.connect(self.fit_linear_model)
+
+        # UI Layout
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(self.plot, 0, 0)
         layout.setMenuBar(menubar)
+        layout.addWidget(self.plot, 0, 0)
+        layout.addWidget(self.text, 0, 1)
+        layout.addWidget(self.button, 1, 1)
 
         self.setLayout(layout)
         self.show()
@@ -67,6 +76,18 @@ class PlotApplication(QtWidgets.QWidget):
         errorbars = pg.ErrorBarItem(x=self.data.x, y=self.data.y,
                                     height=self.data.yerr, pen=pen)
         self.plot.addItem(errorbars)
+
+    def fit_linear_model(self):
+        """Fit a linear model to the data."""
+
+        data = self.data
+        model = models.LinearModel()
+        fit = model.fit(data.y, x=data.x, weights=1 / data.yerr)
+
+        self.text.setPlainText(fit.fit_report())
+
+        x = np.linspace(data.x.min(), data.x.max())
+        self.plot.plot(x, fit.eval(x=x), pen={'color': 'r'})
 
 
 if __name__ == '__main__':
