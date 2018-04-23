@@ -53,8 +53,11 @@ class PlotApplication(QtWidgets.QMainWindow):
     def plot_data(self):
         """Plot the data in a graph."""
 
+        # Use a black pen and brush (fill)
         pen = pg.mkPen(width=3, color='k')
         brush = pg.mkBrush(color='k')
+
+        # Plot the data, with errorbars
         self.plot.plot(self.data.x, self.data.y, pen=None, symbol='o',
                        symbolSize=7, symbolPen=None, symbolBrush=brush)
         errorbars = pg.ErrorBarItem(x=self.data.x, y=self.data.y,
