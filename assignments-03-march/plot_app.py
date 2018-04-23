@@ -1,5 +1,6 @@
-import pdb
 import sys
+
+import ipdb
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -27,10 +28,8 @@ class PlotApplication(QtWidgets.QMainWindow):
     def open_file_dialog(self):
         file_name = QtWidgets.QFileDialog.getOpenFileName(self)
 
-        QtCore.pyqtRemoveInputHook()
-        pdb.set_trace()
-        QtCore.pyqtRestoreInputHook()
-        
+        ipdb.set_trace()
+
 
 if __name__ == '__main__':
     qtapp = QtWidgets.QApplication(sys.argv)
