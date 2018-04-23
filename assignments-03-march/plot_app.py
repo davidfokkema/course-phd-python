@@ -20,10 +20,6 @@ class PlotApplication(QtWidgets.QWidget):
 
         self.init_ui()
 
-        # temporary code to speed up development
-        self.data = pd.read_csv('data.csv')
-        self.plot_data()
-
     def init_ui(self):
         """Create the user interface."""
 
@@ -80,14 +76,15 @@ class PlotApplication(QtWidgets.QWidget):
     def fit_linear_model(self):
         """Fit a linear model to the data."""
 
-        data = self.data
-        model = models.LinearModel()
-        fit = model.fit(data.y, x=data.x, weights=1 / data.yerr)
+        if self.data is not None:
+            data = self.data
+            model = models.LinearModel()
+            fit = model.fit(data.y, x=data.x, weights=1 / data.yerr)
 
-        self.text.setPlainText(fit.fit_report())
+            self.text.setPlainText(fit.fit_report())
 
-        x = np.linspace(data.x.min(), data.x.max())
-        self.plot.plot(x, fit.eval(x=x), pen={'color': 'r'})
+            x = np.linspace(data.x.min(), data.x.max())
+            self.plot.plot(x, fit.eval(x=x), pen={'color': 'r'})
 
 
 if __name__ == '__main__':
