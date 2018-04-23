@@ -31,9 +31,9 @@ class PlotApplication(QtWidgets.QMainWindow):
         file_menu.addAction(open_file_action)
 
         # Main UI
-        plot = pg.PlotWidget()
+        self.plot = pg.PlotWidget()
 
-        self.setCentralWidget(plot)
+        self.setCentralWidget(self.plot)
         self.show()
 
     def open_file_dialog(self):
@@ -47,7 +47,7 @@ class PlotApplication(QtWidgets.QMainWindow):
     def plot_data(self):
         """Plot the data in a graph."""
 
-        pass
+        self.plot.plot(self.data.x, self.data.y)
 
 
 if __name__ == '__main__':
