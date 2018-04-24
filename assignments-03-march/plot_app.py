@@ -3,6 +3,10 @@
    This is a very simple Qt application demonstrating the ability to plot a
    dataset and perform a fit to a linear modelself.
 
+   WARNING: Qt bug on MacOS. You have to cmd-Tab twice to switch focus to
+   another app and switch back. Until you do, the menubar won't function
+   properly.
+
    To run this script, you need to have a few packages installed (PyQt5,
    pandas/numpy, lmfit and pyqtgraph). Not all packages are included in the
    main conda channel, but you can simply add the conda-forge channel. Create a
@@ -22,6 +26,7 @@
    Then run the application:
 
       $ python plot_app.py
+
 """
 
 import sys
