@@ -1,6 +1,31 @@
+"""Simple plot application fitting a linear modelself.
+
+   This is a very simple Qt application demonstrating the ability to plot a
+   dataset and perform a fit to a linear modelself.
+
+   To run this script, you need to have a few packages installed (PyQt5,
+   pandas/numpy, lmfit and pyqtgraph). Not all packages are included in the
+   main conda channel, but you can simply add the conda-forge channel. Create a
+   conda environment for this app:
+
+      $ conda config --add channels conda-forge
+      $ conda create -n plotapp python=3 pandas lmfit pyqt pyqtgraph
+
+   On MacOS/Linux:
+
+      $ source activate plotapp
+
+   On Windows:
+
+      $ activate plotapp
+
+   Then run the application:
+
+      $ python plot_app.py
+"""
+
 import sys
 
-# import ipdb
 import numpy as np
 import pandas as pd
 from lmfit import models
