@@ -6,6 +6,7 @@ import time
 
 import numpy as np
 
+
 class DataAcquistion(multiprocessing.Process):
 
     """Fake data acquisition processself.
