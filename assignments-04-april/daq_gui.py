@@ -31,7 +31,7 @@ class UserInterface(QtWidgets.QWidget):
 
         """
 
-        self.daq_worker = DAQWorker()
+        self.daq_worker = DAQWorker(self.queue)
         self.daq_thread = QtCore.QThread()
         self.daq_worker.moveToThread(self.daq_thread)
         self.daq_thread.started.connect(self.daq_worker.run)
@@ -65,11 +65,18 @@ class UserInterface(QtWidgets.QWidget):
 
 class DAQWorker(QtCore.QObject):
 
+    def __init__(self, queue, **kwargs):
+        super().__init__(**kwargs)
+        self.queue = queue
+
     @QtCore.pyqtSlot()
     def run(self):
+        daq = DataAcquistion(self.queue)
+        daq.start()
+
         while True:
-            print("Running...")
-            time.sleep(1)
+            data = self.queue.get()
+            print(data)
 
 
 if __name__ == '__main__':
