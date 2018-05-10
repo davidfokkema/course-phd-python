@@ -3,6 +3,7 @@
 import multiprocessing
 import sys
 import time
+import threading
 
 from PyQt5 import QtWidgets, QtCore
 import pyqtgraph as pg
@@ -36,6 +37,7 @@ class UserInterface(QtWidgets.QWidget):
         self.daq_worker.moveToThread(self.daq_thread)
         self.daq_worker.new_data_signal.connect(self.plot_data)
         self.daq_thread.started.connect(self.daq_worker.run)
+        self.daq_worker.second_signal.connect(self.daq_worker.second)
 
     def init_ui(self):
         """Create the user interface."""
@@ -63,10 +65,15 @@ class UserInterface(QtWidgets.QWidget):
         self.plot.clear()
         self.plot.plot(data['x'], data['y'])
 
+        print("GUI:", threading.currentThread().getName())
+
+        self.daq_worker.second_signal.emit()
+
 
 class DAQWorker(QtCore.QObject):
 
     new_data_signal = QtCore.pyqtSignal(dict)
+    second_signal = QtCore.pyqtSignal()
 
     def __init__(self, queue, **kwargs):
         super().__init__(**kwargs)
@@ -77,9 +84,15 @@ class DAQWorker(QtCore.QObject):
         daq = DataAcquistion(self.queue)
         daq.start()
 
-        while True:
-            data = self.queue.get()
-            self.new_data_signal.emit(data)
+        # while True:
+        data = self.queue.get()
+        self.new_data_signal.emit(data)
+
+        print("GUI worker:", threading.currentThread().getName())
+
+    @QtCore.pyqtSlot()
+    def second(self):
+        print("Second")
 
 
 if __name__ == '__main__':
