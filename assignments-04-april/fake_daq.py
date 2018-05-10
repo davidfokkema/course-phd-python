@@ -9,9 +9,9 @@ import numpy as np
 
 class DataAcquistion(multiprocessing.Process):
 
-    """Fake data acquisition processself.
+    """Fake data acquisition process.
 
-    This process will inject fake data into a queueself.
+    This process will inject fake data into a queue.
 
     """
 

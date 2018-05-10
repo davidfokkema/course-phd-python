@@ -23,11 +23,11 @@ class UserInterface(QtWidgets.QWidget):
     def init_worker(self):
         """Setup the worker thread.
 
-           First, instantiate the worker and a QThread. Then, make sure the
-           worker will run in a thread managed by the QThread by calling the
-           :meth:`QObject.moveToThread` method. Finally, attach the `started`
-           signal to the `run` slot on the worker, so that the worker will
-           actually start.
+        First, instantiate the worker and a QThread. Then, make sure the worker
+        will run in a thread managed by the QThread by calling the
+        :meth:`QObject.moveToThread` method. Finally, attach the `started`
+        signal to the `run` slot on the worker, so that the worker will
+        actually start.
 
         """
 
