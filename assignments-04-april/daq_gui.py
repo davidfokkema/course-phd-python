@@ -34,6 +34,7 @@ class UserInterface(QtWidgets.QWidget):
         self.daq_worker = DAQWorker(self.queue)
         self.daq_thread = QtCore.QThread()
         self.daq_worker.moveToThread(self.daq_thread)
+        self.daq_worker.new_data_signal.connect(self.plot_data)
         self.daq_thread.started.connect(self.daq_worker.run)
 
     def init_ui(self):
@@ -57,13 +58,14 @@ class UserInterface(QtWidgets.QWidget):
     def stop_daq(self):
         self.daq_thread.stop()
 
-    def read_data(self):
-        while True:
-            data = self.queue.get()
-            print(data)
+    @QtCore.pyqtSlot(dict)
+    def plot_data(self, data):
+        print("GUI:", data)
 
 
 class DAQWorker(QtCore.QObject):
+
+    new_data_signal = QtCore.pyqtSignal(dict)
 
     def __init__(self, queue, **kwargs):
         super().__init__(**kwargs)
@@ -76,7 +78,7 @@ class DAQWorker(QtCore.QObject):
 
         while True:
             data = self.queue.get()
-            print(data)
+            self.new_data_signal.emit(data)
 
 
 if __name__ == '__main__':
