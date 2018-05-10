@@ -84,11 +84,11 @@ class DAQWorker(QtCore.QObject):
         daq = DataAcquistion(self.queue)
         daq.start()
 
-        # while True:
-        data = self.queue.get()
-        self.new_data_signal.emit(data)
+        while True:
+            data = self.queue.get()
+            self.new_data_signal.emit(data)
 
-        print("GUI worker:", threading.currentThread().getName())
+            print("GUI worker:", threading.currentThread().getName())
 
     @QtCore.pyqtSlot()
     def second(self):
