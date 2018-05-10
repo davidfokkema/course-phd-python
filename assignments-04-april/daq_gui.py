@@ -17,6 +17,8 @@ class UserInterface(QtWidgets.QWidget):
         super().__init__()
 
         self.queue = queue
+        self.must_shutdown = threading.Event()
+
         self.init_worker()
         self.init_ui()
         self.start_daq()
@@ -32,12 +34,11 @@ class UserInterface(QtWidgets.QWidget):
 
         """
 
-        self.daq_worker = DAQWorker(self.queue)
+        self.daq_worker = DAQWorker(self.queue, self.must_shutdown)
         self.daq_thread = QtCore.QThread()
         self.daq_worker.moveToThread(self.daq_thread)
         self.daq_worker.new_data_signal.connect(self.plot_data)
         self.daq_thread.started.connect(self.daq_worker.run)
-        self.daq_worker.second_signal.connect(self.daq_worker.second)
 
     def init_ui(self):
         """Create the user interface."""
@@ -67,32 +68,30 @@ class UserInterface(QtWidgets.QWidget):
 
         print("GUI:", threading.currentThread().getName())
 
-        self.daq_worker.second_signal.emit()
+        self.must_shutdown.set()
 
 
 class DAQWorker(QtCore.QObject):
 
     new_data_signal = QtCore.pyqtSignal(dict)
-    second_signal = QtCore.pyqtSignal()
 
-    def __init__(self, queue, **kwargs):
+    def __init__(self, queue, must_shutdown, **kwargs):
         super().__init__(**kwargs)
         self.queue = queue
+        self.must_shutdown = must_shutdown
 
     @QtCore.pyqtSlot()
     def run(self):
         daq = DataAcquistion(self.queue)
         daq.start()
 
-        while True:
+        while not self.must_shutdown.is_set():
             data = self.queue.get()
             self.new_data_signal.emit(data)
 
             print("GUI worker:", threading.currentThread().getName())
 
-    @QtCore.pyqtSlot()
-    def second(self):
-        print("Second")
+        print("QUITTING WORKER")
 
 
 if __name__ == '__main__':
