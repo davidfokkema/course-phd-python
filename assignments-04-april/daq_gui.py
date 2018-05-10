@@ -2,7 +2,7 @@
 
 import multiprocessing
 import sys
-import time
+import signal
 import threading
 
 from PyQt5 import QtWidgets, QtCore
@@ -54,20 +54,22 @@ class UserInterface(QtWidgets.QWidget):
         self.setLayout(layout)
         self.show()
 
+    def closeEvent(self, event):
+        print("CLOSING.")
+        self.stop_daq()
+
     def start_daq(self):
         self.daq_thread.start()
 
     def stop_daq(self):
-        self.daq_thread.stop()
+        self.must_shutdown.set()
+        self.daq_thread.quit()
+        self.daq_thread.wait()
 
     @QtCore.pyqtSlot(dict)
     def plot_data(self, data):
         self.plot.clear()
         self.plot.plot(data['x'], data['y'])
-
-        print("GUI:", threading.currentThread().getName())
-
-        self.must_shutdown.set()
 
 
 class DAQWorker(QtCore.QObject):
@@ -75,22 +77,27 @@ class DAQWorker(QtCore.QObject):
     new_data_signal = QtCore.pyqtSignal(dict)
 
     def __init__(self, must_shutdown, **kwargs):
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+
         super().__init__(**kwargs)
         self.must_shutdown = must_shutdown
 
     @QtCore.pyqtSlot()
     def run(self):
         queue = multiprocessing.Queue()
-        daq = DataAcquistion(queue)
+        daq_shutdown = multiprocessing.Event()
+        daq = DataAcquistion(queue, daq_shutdown)
+
         daq.start()
 
         while not self.must_shutdown.is_set():
             data = queue.get()
             self.new_data_signal.emit(data)
 
-            print("GUI worker:", threading.currentThread().getName())
-
-        print("QUITTING WORKER")
+        print("DAQ shutting down...")
+        daq_shutdown.set()
+        daq.join()
+        print("Done.")
 
 
 if __name__ == '__main__':
