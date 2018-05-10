@@ -13,6 +13,8 @@ from fake_daq import DataAcquistion
 
 class UserInterface(QtWidgets.QWidget):
 
+    """Graphical user interface for the data acquisition application."""
+
     def __init__(self):
         super().__init__()
 
@@ -55,24 +57,38 @@ class UserInterface(QtWidgets.QWidget):
         self.show()
 
     def closeEvent(self, event):
-        print("CLOSING.")
+        """Close the application.
+
+        This method is called whenever a close event is triggered. We need to
+        stop the DAQ process.
+
+        """
         self.stop_daq()
 
     def start_daq(self):
+        """Start the DAQ process."""
         self.daq_thread.start()
 
     def stop_daq(self):
+        """Stop the DAQ process."""
+
+        # signal the DAQ worker to shutdown
         self.must_shutdown.set()
+        # quit and wait for the DAQ thread to shutdown
         self.daq_thread.quit()
         self.daq_thread.wait()
 
     @QtCore.pyqtSlot(dict)
     def plot_data(self, data):
+        """Plot the event data."""
+
         self.plot.clear()
         self.plot.plot(data['x'], data['y'])
 
 
 class DAQWorker(QtCore.QObject):
+
+    """Worker thread to manage the data acquisition process."""
 
     new_data_signal = QtCore.pyqtSignal(dict)
 
@@ -84,6 +100,8 @@ class DAQWorker(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def run(self):
+        """Run the DAQ and process incoming data."""
+
         queue = multiprocessing.Queue()
         daq_shutdown = multiprocessing.Event()
         daq = DataAcquistion(queue, daq_shutdown)
