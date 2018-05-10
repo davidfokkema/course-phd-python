@@ -60,7 +60,8 @@ class UserInterface(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(dict)
     def plot_data(self, data):
-        print("GUI:", data)
+        self.plot.clear()
+        self.plot.plot(data['x'], data['y'])
 
 
 class DAQWorker(QtCore.QObject):
