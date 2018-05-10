@@ -13,10 +13,9 @@ from fake_daq import DataAcquistion
 
 class UserInterface(QtWidgets.QWidget):
 
-    def __init__(self, queue):
+    def __init__(self):
         super().__init__()
 
-        self.queue = queue
         self.must_shutdown = threading.Event()
 
         self.init_worker()
@@ -34,7 +33,7 @@ class UserInterface(QtWidgets.QWidget):
 
         """
 
-        self.daq_worker = DAQWorker(self.queue, self.must_shutdown)
+        self.daq_worker = DAQWorker(self.must_shutdown)
         self.daq_thread = QtCore.QThread()
         self.daq_worker.moveToThread(self.daq_thread)
         self.daq_worker.new_data_signal.connect(self.plot_data)
@@ -75,18 +74,18 @@ class DAQWorker(QtCore.QObject):
 
     new_data_signal = QtCore.pyqtSignal(dict)
 
-    def __init__(self, queue, must_shutdown, **kwargs):
+    def __init__(self, must_shutdown, **kwargs):
         super().__init__(**kwargs)
-        self.queue = queue
         self.must_shutdown = must_shutdown
 
     @QtCore.pyqtSlot()
     def run(self):
-        daq = DataAcquistion(self.queue)
+        queue = multiprocessing.Queue()
+        daq = DataAcquistion(queue)
         daq.start()
 
         while not self.must_shutdown.is_set():
-            data = self.queue.get()
+            data = queue.get()
             self.new_data_signal.emit(data)
 
             print("GUI worker:", threading.currentThread().getName())
@@ -97,7 +96,6 @@ class DAQWorker(QtCore.QObject):
 if __name__ == '__main__':
     qtapp = QtWidgets.QApplication(sys.argv)
 
-    queue = multiprocessing.Queue()
-    ui = UserInterface(queue)
+    ui = UserInterface()
 
     qtapp.exec_()
