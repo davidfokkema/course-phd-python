@@ -84,6 +84,7 @@ class UserInterface(QtWidgets.QWidget):
 
         self.plot.clear()
         self.plot.plot(data['x'], data['y'])
+        print(data['y'][100])
 
 
 class DAQWorker(QtCore.QObject):
