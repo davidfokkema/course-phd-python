@@ -122,6 +122,8 @@ class DAQWorker(QtCore.QObject):
     new_data_signal = QtCore.pyqtSignal(dict)
 
     def __init__(self, must_shutdown, **kwargs):
+        # ignore SIGINT (or Ctrl-C) signals. Only the main process will capture
+        # these signals and signal a shutdown.
         signal.signal(signal.SIGINT, signal.SIG_IGN)
 
         super().__init__(**kwargs)
@@ -149,7 +151,5 @@ class DAQWorker(QtCore.QObject):
 
 if __name__ == '__main__':
     qtapp = QtWidgets.QApplication(sys.argv)
-
     ui = UserInterface()
-
-    qtapp.exec_()
+    sys.exit(qtapp.exec_())
