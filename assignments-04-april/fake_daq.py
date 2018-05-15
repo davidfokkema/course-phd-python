@@ -44,7 +44,7 @@ class DataAcquistion(multiprocessing.Process):
 
             print(pulseheight, signal[0], event[100])
 
-            return x, event + noise
+            return x, event
 
 
 if __name__ == '__main__':
