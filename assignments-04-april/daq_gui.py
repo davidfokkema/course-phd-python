@@ -83,8 +83,10 @@ class UserInterface(QtWidgets.QWidget):
         """Plot the event data."""
 
         self.plot.clear()
-        self.plot.plot(data['x'], data['y'])
-        print(data['y'][100])
+        self.plot.plot(data['x'] * 1e9, data['y'], pen='k')
+        self.plot.setLabels(title='Scintillator event', bottom='Time [ns]',
+                            left='Signal [mV]')
+        self.plot.setYRange(0, -500)
 
 
 class DAQWorker(QtCore.QObject):

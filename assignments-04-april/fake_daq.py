@@ -27,22 +27,18 @@ class DataAcquistion(multiprocessing.Process):
 
         while not self.must_shutdown.is_set():
             time.sleep(random.uniform(0, 2))
-
             x, y = self.create_fake_event()
-
             self.queue.put({'x': x, 'y': y})
 
     @classmethod
     def create_fake_event(self):
-            x = np.arange(0, 3e-6, 2.5e-9)
-            pulseheight = np.random.uniform(low=130, high=500)
-            noise = np.random.normal(size=x.shape, scale=5)
+            x = np.arange(0, 3e-6, 5e-9)
+            pulseheight = np.random.uniform(low=30, high=500)
+            noise = np.random.normal(size=x.shape, scale=2)
             signal = -pulseheight * np.exp(-5e6 * x)
 
             event = noise
-            event[100:] += signal[:-100]
-
-            print(pulseheight, signal[0], event[100])
+            event[50:] += signal[:-50]
 
             return x, event
 
