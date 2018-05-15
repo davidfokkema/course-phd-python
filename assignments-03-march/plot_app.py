@@ -1,7 +1,7 @@
-"""Simple plot application fitting a linear modelself.
+"""Simple plot application fitting a linear model.
 
    This is a very simple Qt application demonstrating the ability to plot a
-   dataset and perform a fit to a linear modelself.
+   dataset and perform a fit to a linear model.
 
    WARNING: Qt bug on MacOS. You have to cmd-Tab twice to switch focus to
    another app and switch back. Until you do, the menubar won't function

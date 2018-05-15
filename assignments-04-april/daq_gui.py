@@ -1,4 +1,30 @@
-"""Fake data acquisition application."""
+"""Data acquisition application.
+
+   This is a very simple Qt application demonstrating a data acquisition setup.
+   The DAQ runs in a separate process, supervised by a dedicated thread in the
+   Qt app.
+
+   To run this script, you need to have a few packages installed (PyQt5, numpy
+   and pyqtgraph). Not all packages are included in the main conda channel, but
+   you can simply add the conda-forge channel. Create a conda environment for
+   this app:
+
+      $ conda config --add channels conda-forge
+      $ conda create -n daq python=3 numpy pyqt pyqtgraph
+
+   On MacOS/Linux:
+
+      $ source activate daq
+
+   On Windows:
+
+      $ activate daq
+
+   Then run the application:
+
+      $ python daq_gui.py
+
+"""
 
 import multiprocessing
 import sys
